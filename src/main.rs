@@ -2,9 +2,12 @@ use std::time::SystemTime;
 
 use parking_lot::Mutex;
 use strum::IntoEnumIterator;
-use tokio::task::{spawn, spawn_blocking};
+use tokio::task::spawn;
 
 use inputbot::{BlockInput, KeybdKey};
+
+#[macro_use]
+extern crate tracing;
 
 mod enabled;
 
@@ -51,9 +54,13 @@ static PRESSED_KEYS: Mutex<Vec<(KeybdKey, u128)>> = Mutex::new(Vec::new());
 
 #[tokio::main]
 async fn main() {
+    tracing_subscriber::fmt::init();
+
     ctrlc::set_handler(|| {
         for key in KeybdKey::iter() {
-            key.release();
+            if key.release().join().is_err() {
+                error!("Failed to release key: {:?}", key);
+            };
         }
 
         println!("Goodbye...");
@@ -98,19 +105,16 @@ async fn main() {
 
                         let is_upper = rand::random::<bool>();
 
-                        std::thread::spawn(move || {
-                            if is_upper {
-                                KeybdKey::LShiftKey.press();
-                            }
+                        if is_upper {
+                            KeybdKey::LShiftKey.press();
+                        }
 
-                            key.press();
-                            key.release();
-                            // println!("pressed key {:?}", key);
+                        key.press();
+                        key.release();
 
-                            if is_upper {
-                                KeybdKey::LShiftKey.release();
-                            }
-                        });
+                        if is_upper {
+                            KeybdKey::LShiftKey.release();
+                        }
 
                         BlockInput::Block
                     })
@@ -126,7 +130,7 @@ async fn main() {
     spawn(async {
         loop {
             if let Some(pressed_keys) = PRESSED_KEYS.try_lock() {
-                println!("{:?}", pressed_keys);
+                debug!("{:?}", pressed_keys);
             }
 
             std::thread::sleep(std::time::Duration::from_millis(100));
