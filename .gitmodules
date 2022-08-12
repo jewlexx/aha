@@ -1,0 +1,3 @@
+[submodule "InputBot"]
+	path = InputBot
+	url = https://github.com/jewlexx/InputBot.git

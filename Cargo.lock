@@ -7,7 +7,7 @@ name = "aha"
 version = "0.1.0"
 dependencies = [
  "ctrlc",
- "inputbot",
+ "inputbot 0.5.0 (git+https://github.com/obv-mikhail/InputBot.git?branch=develop)",
  "parking_lot",
  "rand",
  "thiserror",
@@ -118,6 +118,21 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e09d849da95ebb5d091c600f6cdae5193077995f1e9095c16a5bb4f84b561933"
 dependencies = [
  "libc",
+]
+
+[[package]]
+name = "inputbot"
+version = "0.5.0"
+dependencies = [
+ "input",
+ "libc",
+ "nix 0.24.2",
+ "once_cell",
+ "strum",
+ "strum_macros",
+ "uinput",
+ "winapi",
+ "x11",
 ]
 
 [[package]]
