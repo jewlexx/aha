@@ -7,7 +7,7 @@ use tokio::task::spawn;
 use inputbot::{BlockInput, KeybdKey};
 
 #[macro_use]
-extern crate tracing;
+extern crate log;
 
 mod enabled;
 
@@ -44,9 +44,22 @@ static KEYS: [KeybdKey; 26] = [
 
 static PRESSED_KEYS: Mutex<Vec<(KeybdKey, u128)>> = Mutex::new(Vec::new());
 
+const MAX_LEVEL: tracing::Level = {
+    cfg_if::cfg_if! {
+        if #[cfg(not(debug_assertions))] {
+            tracing::Level::INFO
+        } else {
+            tracing::Level::TRACE
+        }
+    }
+};
+
 #[tokio::main]
 async fn main() {
-    tracing_subscriber::fmt::init();
+    tracing_subscriber::fmt()
+        .with_level(true)
+        .with_max_level(MAX_LEVEL)
+        .init();
 
     ctrlc::set_handler(|| {
         for key in KeybdKey::iter() {
@@ -97,16 +110,20 @@ async fn main() {
 
                         let is_upper = rand::random::<bool>();
 
-                        if is_upper {
-                            KeybdKey::LShiftKey.press();
-                        }
+                        std::thread::spawn(move || {
+                            if is_upper {
+                                KeybdKey::LShiftKey.press();
+                            }
 
-                        key.press();
-                        key.release();
+                            key.press();
+                            key.release();
 
-                        if is_upper {
-                            KeybdKey::LShiftKey.release();
-                        }
+                            debug!("Pressed key {:?}", key);
+
+                            if is_upper {
+                                KeybdKey::LShiftKey.release();
+                            }
+                        });
 
                         BlockInput::Block
                     })
@@ -122,7 +139,9 @@ async fn main() {
     spawn(async {
         loop {
             if let Some(pressed_keys) = PRESSED_KEYS.try_lock() {
-                debug!("{:?}", pressed_keys);
+                if !pressed_keys.is_empty() {
+                    debug!("{:?}", pressed_keys);
+                }
             }
 
             std::thread::sleep(std::time::Duration::from_millis(100));

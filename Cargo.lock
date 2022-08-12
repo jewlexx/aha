@@ -6,8 +6,10 @@ version = 3
 name = "aha"
 version = "0.1.0"
 dependencies = [
+ "cfg-if",
  "ctrlc",
  "inputbot",
+ "log",
  "parking_lot",
  "rand",
  "strum",
@@ -411,6 +413,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2fce9567bd60a67d08a16488756721ba392f24f29006402881e43b19aac64307"
 dependencies = [
  "cfg-if",
+ "log",
  "pin-project-lite",
  "tracing-attributes",
  "tracing-core",
@@ -455,6 +458,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "60db860322da191b40952ad9affe65ea23e7dd6a5c442c2c42865810c6ab8e6b"
 dependencies = [
  "ansi_term",
+ "parking_lot",
  "sharded-slab",
  "smallvec",
  "thread_local",
