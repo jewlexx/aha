@@ -1,9 +1,10 @@
 use std::time::SystemTime;
 
 use parking_lot::Mutex;
+use strum::IntoEnumIterator;
 use tokio::task::spawn;
 
-use inputbot::KeybdKey;
+use inputbot::{BlockInput, KeybdKey};
 
 mod enabled;
 
@@ -50,6 +51,16 @@ static PRESSED_KEYS: Mutex<Vec<(KeybdKey, u128)>> = Mutex::new(Vec::new());
 
 #[tokio::main]
 async fn main() {
+    ctrlc::set_handler(|| {
+        for key in KeybdKey::iter() {
+            key.release();
+        }
+
+        println!("Goodbye...");
+        std::process::exit(0);
+    })
+    .expect("failed to set Ctrl-C handler");
+
     let (tx, mut rx) = tokio::sync::mpsc::channel::<()>(1);
 
     KeybdKey::BackquoteKey.bind(move || {
@@ -65,7 +76,7 @@ async fn main() {
 
             if ENABLED.get() {
                 for key in KEYS {
-                    key.bind(move || {
+                    key.blockable_bind(move || {
                         // The following block attempts to prevent the program from triggering the event again if the key was pressed by the program itself.
                         {
                             let mut pressed_keys = PRESSED_KEYS.lock();
@@ -79,6 +90,7 @@ async fn main() {
                                 .position(|(k, t)| k == &key && (time - t) < 10)
                             {
                                 pressed_keys.remove(pos);
+                                return BlockInput::DontBlock;
                             } else {
                                 pressed_keys.push((key, time));
                             }
@@ -92,11 +104,13 @@ async fn main() {
 
                         key.press();
                         key.release();
-                        println!("pressed key {:?}", key);
+                        // println!("pressed key {:?}", key);
 
                         if is_upper {
                             KeybdKey::LShiftKey.release();
                         }
+
+                        BlockInput::Block
                     })
                 }
             } else {

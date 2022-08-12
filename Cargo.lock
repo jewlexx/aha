@@ -10,6 +10,7 @@ dependencies = [
  "inputbot",
  "parking_lot",
  "rand",
+ "strum",
  "thiserror",
  "tokio",
  "tracing",
