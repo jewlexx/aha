@@ -107,6 +107,16 @@ async fn main() {
         }
     });
 
+    spawn(async {
+        loop {
+            if let Some(pressed_keys) = PRESSED_KEYS.try_lock() {
+                println!("{:?}", pressed_keys);
+            }
+
+            std::thread::sleep(std::time::Duration::from_millis(100));
+        }
+    });
+
     // Begin listening for input events
     // Blocks current execution until the program is closed so
     // open in a thread in order to keep execution flow
