@@ -7,7 +7,7 @@ name = "aha"
 version = "0.1.0"
 dependencies = [
  "ctrlc",
- "inputbot 0.5.0 (git+https://github.com/obv-mikhail/InputBot.git?branch=develop)",
+ "inputbot",
  "parking_lot",
  "rand",
  "thiserror",
@@ -123,22 +123,6 @@ dependencies = [
 [[package]]
 name = "inputbot"
 version = "0.5.0"
-dependencies = [
- "input",
- "libc",
- "nix 0.24.2",
- "once_cell",
- "strum",
- "strum_macros",
- "uinput",
- "winapi",
- "x11",
-]
-
-[[package]]
-name = "inputbot"
-version = "0.5.0"
-source = "git+https://github.com/obv-mikhail/InputBot.git?branch=develop#b91aec374fa9539e30b104fe3578948ee5646159"
 dependencies = [
  "input",
  "libc",

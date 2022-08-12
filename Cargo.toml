@@ -10,7 +10,7 @@ members = ["InputBot"]
 
 [dependencies]
 ctrlc = "3.2.2"
-inputbot = { git = "https://github.com/obv-mikhail/InputBot.git", branch = "develop", version = "0.5.0" }
+inputbot = { version = "0.5.0", path = "InputBot" }
 parking_lot = "0.12.1"
 rand = "0.8.5"
 thiserror = "1.0.32"

@@ -55,8 +55,14 @@ fn main() {
     //     }
     // });
 
+    KeybdKey::LMetaKey.bind(move || {
+        println!("pressed key {:?}", KeybdKey::LMetaKey);
+    });
+
     // Begin listening for input events
     // Blocks current execution until the program is closed so
     // open in a thread in order to keep execution flow
-    thread::spawn(inputbot::handle_input_events);
+    thread::spawn(inputbot::handle_input_events)
+        .join()
+        .expect("failed to join thread");
 }
