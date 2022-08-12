@@ -1,0 +1,12 @@
+[package]
+name = "aha"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+ctrlc = "3.2.2"
+inputbot = { git = "https://github.com/obv-mikhail/InputBot.git", branch = "develop", version = "0.5.0" }
+parking_lot = "0.12.1"
+rand = "0.8.5"
