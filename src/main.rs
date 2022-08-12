@@ -13,14 +13,6 @@ mod enabled;
 
 use enabled::ENABLED;
 
-/**
- * Problem:
- *  Upon pressing a key, the event will fire again, triggering the same issue until the program is closed.
- *
- * Idea to prevent infinite loops:
- *  Create a vector of keys that have been pressed as well as their timestamp in ms and remove them upon consumption assuming that the timestamp matches within 10ms.
-*/
-
 static KEYS: [KeybdKey; 26] = [
     KeybdKey::AKey,
     KeybdKey::BKey,
