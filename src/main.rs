@@ -2,7 +2,7 @@ use std::time::SystemTime;
 
 use parking_lot::Mutex;
 use strum::IntoEnumIterator;
-use tokio::task::spawn;
+use tokio::task::{spawn, spawn_blocking};
 
 use inputbot::{BlockInput, KeybdKey};
 
@@ -98,17 +98,19 @@ async fn main() {
 
                         let is_upper = rand::random::<bool>();
 
-                        if is_upper {
-                            KeybdKey::LShiftKey.press();
-                        }
+                        std::thread::spawn(move || {
+                            if is_upper {
+                                KeybdKey::LShiftKey.press();
+                            }
 
-                        key.press();
-                        key.release();
-                        // println!("pressed key {:?}", key);
+                            key.press();
+                            key.release();
+                            // println!("pressed key {:?}", key);
 
-                        if is_upper {
-                            KeybdKey::LShiftKey.release();
-                        }
+                            if is_upper {
+                                KeybdKey::LShiftKey.release();
+                            }
+                        });
 
                         BlockInput::Block
                     })
