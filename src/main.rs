@@ -9,9 +9,9 @@ use inputbot::{
 use parking_lot::{const_mutex, Mutex};
 use std::thread;
 
-mod toggle;
+mod enabled;
 
-use toggle::Toggle;
+use enabled::ENABLED;
 
 /**
  * Problem:
@@ -26,13 +26,12 @@ const KEYS: [inputbot::KeybdKey; 26] = [
     QKey, RKey, SKey, TKey, UKey, VKey, WKey, XKey, YKey, ZKey,
 ];
 
-static ENABLED: Mutex<bool> = const_mutex(false);
 static JUST_TOGGLED: Mutex<bool> = const_mutex(false);
 
 fn main() {
     BackquoteKey.bind(move || {
         if LControlKey.is_pressed() && LShiftKey.is_pressed() {
-            ENABLED.lock().toggle();
+            ENABLED.toggle();
             *JUST_TOGGLED.lock() = true;
         }
     });
@@ -40,7 +39,7 @@ fn main() {
     thread::spawn(move || loop {
         if *JUST_TOGGLED.lock() {
             *JUST_TOGGLED.lock() = false;
-            if *ENABLED.lock() {
+            if ENABLED.get() {
                 for key in KEYS {
                     key.bind(move || {
                         let is_upper = rand::random::<bool>();
