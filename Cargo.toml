@@ -17,6 +17,6 @@ parking_lot = "0.12.1"
 rand = "0.8.5"
 strum = "0.24.1"
 thiserror = "1.0.32"
-tokio = { version = "1.20.1", features = ["full"] }
+tokio = { version = "1.20.3", features = ["full"] }
 tracing = { version = "0.1.36", features = ["log"] }
 tracing-subscriber = { version = "0.3.15", features = ["parking_lot"] }
